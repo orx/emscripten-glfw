@@ -137,12 +137,16 @@ private:
   std::shared_ptr<Window> findFocusedOrSingleWindow() const;
   void computeWindowPos();
 
+#ifndef EMSCRIPTEN_GLFW3_DISABLE_TOUCH
   // touch
   constexpr bool isTrackingTouch() const { return fTouchPointId.has_value(); }
   bool onTouchStart(GLFWwindow *iOriginWindow, EmscriptenTouchEvent const *iEvent);
   bool onTouchMove(EmscriptenTouchEvent const *iEvent);
   bool onTouchEnd(EmscriptenTouchEvent const *iEvent);
   EmscriptenTouchPoint const *findTouchPoint(EmscriptenTouchEvent const *iEvent) const;
+#else
+  constexpr bool isTrackingTouch() const { return false; }
+#endif
 
   static double getPlatformTimerValue();
 
@@ -178,12 +182,14 @@ private:
   EventListener<EmscriptenMouseEvent> fOnMouseMove{};
   EventListener<EmscriptenMouseEvent> fOnMouseButtonUp{};
 
+#ifndef EMSCRIPTEN_GLFW3_DISABLE_TOUCH
   // touch
   EventListener<EmscriptenTouchEvent> fOnTouchStart{};
   EventListener<EmscriptenTouchEvent> fOnTouchMove{};
   EventListener<EmscriptenTouchEvent> fOnTouchCancel{};
   EventListener<EmscriptenTouchEvent> fOnTouchEnd{};
   std::optional<int> fTouchPointId{};
+#endif
 
   EventListener<EmscriptenFullscreenChangeEvent> fOnFullscreenChange{};
   EventListener<EmscriptenPointerlockChangeEvent> fOnPointerLockChange{};

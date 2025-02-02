@@ -227,6 +227,7 @@ void Context::addOrRemoveEventListeners(bool iAdd)
       })
       .add(emscripten_set_pointerlockerror_callback_on_thread);
 
+#ifndef EMSCRIPTEN_GLFW3_DISABLE_TOUCH
     // fOnTouchStart
     fOnTouchStart
       .target(EMSCRIPTEN_EVENT_TARGET_DOCUMENT)
@@ -250,6 +251,7 @@ void Context::addOrRemoveEventListeners(bool iAdd)
       .target(EMSCRIPTEN_EVENT_TARGET_DOCUMENT)
       .listener([this](int iEventType, const EmscriptenTouchEvent *iEvent) { return onTouchEnd(iEvent); })
       .add(emscripten_set_touchend_callback_on_thread);
+#endif
 
     // gamepad/joystick
 #ifndef EMSCRIPTEN_GLFW3_DISABLE_JOYSTICK
@@ -270,10 +272,12 @@ void Context::addOrRemoveEventListeners(bool iAdd)
     fOnPointerLockChange.remove();
     fOnPointerLockError.remove();
 
+#ifndef EMSCRIPTEN_GLFW3_DISABLE_TOUCH
     fOnTouchStart.remove();
     fOnTouchMove.remove();
     fOnTouchCancel.remove();
     fOnTouchEnd.remove();
+#endif
 
 #ifndef EMSCRIPTEN_GLFW3_DISABLE_JOYSTICK
     fOnGamepadConnected.remove();
@@ -524,6 +528,8 @@ bool Context::onPointerUnlock()
   return res;
 }
 
+#ifndef EMSCRIPTEN_GLFW3_DISABLE_TOUCH
+
 //------------------------------------------------------------------------
 // Context::findTouchPoint
 //------------------------------------------------------------------------
@@ -629,11 +635,14 @@ bool Context::onTouchEnd(EmscriptenTouchEvent const *iEvent)
     for(auto &w: fWindows)
       w->onGlobalTouchEnd(touchPoint);
 #else
-    fSingleWindow && fSingleWindow->onGlobalTouchEnd(touchPoint);
+    if(fSingleWindow)
+      fSingleWindow->onGlobalTouchEnd(touchPoint);
 #endif
   }
   return false;
 }
+
+#endif // EMSCRIPTEN_GLFW3_DISABLE_TOUCH
 
 #ifndef EMSCRIPTEN_GLFW3_DISABLE_JOYSTICK
 //------------------------------------------------------------------------

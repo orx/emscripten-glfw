@@ -799,6 +799,8 @@ bool Window::onMouseButtonUp(int iGLFWButton)
   return true;
 }
 
+#ifndef EMSCRIPTEN_GLFW3_DISABLE_TOUCH
+
 //------------------------------------------------------------------------
 // Window::onGlobalTouchStart
 //------------------------------------------------------------------------
@@ -826,6 +828,7 @@ void Window::onGlobalTouchEnd(EmscriptenTouchPoint const *iTouchPoint)
   setCursorPos(iTouchPoint);
   onMouseButtonUp(GLFW_MOUSE_BUTTON_LEFT);
 }
+#endif
 
 //------------------------------------------------------------------------
 // Window::addOrRemoveEventListeners
@@ -909,6 +912,7 @@ void Window::addOrRemoveEventListeners(bool iAdd)
       .listener([this](int eventType, const EmscriptenFocusEvent *iEvent) { return onFocusChange(false); })
       .add(emscripten_set_blur_callback_on_thread);
 
+#ifndef EMSCRIPTEN_GLFW3_DISABLE_TOUCH
     // fOnTouchStart
     fOnTouchStart
       .target(selector)
@@ -916,6 +920,7 @@ void Window::addOrRemoveEventListeners(bool iAdd)
         return fContext->onTouchStart(asOpaquePtr(), iEvent);
       })
       .add(emscripten_set_touchstart_callback_on_thread);
+#endif
   }
   else
   {
@@ -925,7 +930,9 @@ void Window::addOrRemoveEventListeners(bool iAdd)
     fOnMouseWheel.remove();
     fOnFocusChange.remove();
     fOnBlurChange.remove();
+#ifndef EMSCRIPTEN_GLFW3_DISABLE_TOUCH
     fOnTouchStart.remove();
+#endif
   }
 }
 

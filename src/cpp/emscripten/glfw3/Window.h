@@ -199,12 +199,14 @@ private:
   EventListener<EmscriptenFocusEvent> fOnFocusChange{};
   EventListener<EmscriptenFocusEvent> fOnBlurChange{};
 
+#ifndef EMSCRIPTEN_GLFW3_DISABLE_TOUCH
   // touch
 private:
   EventListener<EmscriptenTouchEvent> fOnTouchStart{};
   void onGlobalTouchStart(GLFWwindow *iOriginWindow, EmscriptenTouchPoint const *iTouchPoint);
   void onGlobalTouchMove(EmscriptenTouchPoint const *iTouchPoint);
   void onGlobalTouchEnd(EmscriptenTouchPoint const *iTouchPoint);
+#endif
 
 private:
   void addOrRemoveEventListeners(bool iAdd);

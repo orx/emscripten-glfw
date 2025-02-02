@@ -25,6 +25,9 @@ option(EMSCRIPTEN_GLFW3_DISABLE_JOYSTICK "Disable joystick support" OFF)
 # Use this CMake option to disable multi window support
 option(EMSCRIPTEN_GLFW3_DISABLE_MULTI_WINDOW_SUPPORT "Disable multi window support" OFF)
 
+# Use this CMake option to disable touch support
+option(EMSCRIPTEN_GLFW3_DISABLE_TOUCH "Disable touch support" OFF)
+
 set(glfw3_headers
     src/cpp/emscripten/glfw3/Clipboard.h
     src/cpp/emscripten/glfw3/Config.h
@@ -76,6 +79,7 @@ macro(add_glfw_lib LIBRARY_NAME)
       $<$<CONFIG:Release>:EMSCRIPTEN_GLFW3_DISABLE_WARNING>
       $<$<BOOL:${EMSCRIPTEN_GLFW3_DISABLE_JOYSTICK}>:EMSCRIPTEN_GLFW3_DISABLE_JOYSTICK>
       $<$<BOOL:${EMSCRIPTEN_GLFW3_DISABLE_MULTI_WINDOW_SUPPORT}>:EMSCRIPTEN_GLFW3_DISABLE_MULTI_WINDOW_SUPPORT>
+      $<$<BOOL:${EMSCRIPTEN_GLFW3_DISABLE_TOUCH}>:EMSCRIPTEN_GLFW3_DISABLE_TOUCH>
   )
   target_link_options(${LIBRARY_NAME} PUBLIC "-lGL" "--js-library" "${CMAKE_CURRENT_LIST_DIR}/src/js/lib_emscripten_glfw3.js")
 endmacro()

@@ -30,6 +30,7 @@ VALID_OPTION_VALUES = {
   'disableWarning': ['true', 'false'],
   'disableJoystick': ['true', 'false'],
   'disableMultiWindow': ['true', 'false'],
+  'disableTouch': ['true', 'false'],
   'disableWebGL2': ['true', 'false'],
   'optimizationLevel': ['0', '1', '2', '3', 'g', 's', 'z']  # all -OX possibilities
 }
@@ -38,6 +39,7 @@ OPTIONS = {
   'disableWarning': 'Boolean to disable warnings emitted by the library',
   'disableJoystick': 'Boolean to disable support for joystick entirely',
   'disableMultiWindow': 'Boolean to disable multi window support',
+  'disableTouch': 'Boolean to disable touch support',
   'disableWebGL2': 'Boolean to disable WebGL2 support',
   'optimizationLevel': f'Optimization level: {VALID_OPTION_VALUES["optimizationLevel"]} (default to 2)',
 }
@@ -47,6 +49,7 @@ opts: Dict[str, Union[str, bool]] = {
   'disableWarning': False,
   'disableJoystick': False,
   'disableMultiWindow': False,
+  'disableTouch': False,
   'disableWebGL2': False,
   'optimizationLevel': '2'
 }
@@ -59,6 +62,7 @@ def get_lib_name(settings):
           ('-nw' if opts['disableWarning'] else '') +
           ('-nj' if opts['disableJoystick'] else '') +
           ('-sw' if opts['disableMultiWindow'] else '') +
+          ('-nt' if opts['disableTouch'] else '') +
           ('-mt' if settings.PTHREADS else '') +
           '.a')
 
@@ -85,6 +89,9 @@ def get(ports, settings, shared):
 
     if opts['disableMultiWindow']:
       flags += ['-DEMSCRIPTEN_GLFW3_DISABLE_MULTI_WINDOW_SUPPORT']
+
+    if opts['disableTouch']:
+      flags += ['-DEMSCRIPTEN_GLFW3_DISABLE_TOUCH']
 
     if settings.PTHREADS:
       flags += ['-pthread']
